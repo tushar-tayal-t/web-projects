@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            height: 100vh;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .container {
+            background-color: white;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            overflow-y: scroll;
+            height: 70vh;
+        }
+
+        #taskInput {
+            width: 100%;
+            box-sizing: border-box;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button{
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            background-color: #333;
+            color: white;
+        }
+        .d-btn{
+            margin-left: 10px;
+            background-color: red;
+        }
+        #addTaskButton {
+            display: block;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        #addTaskButton:hover {
+            background-color: #555;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        li {
+            padding: 15px;
+            margin: 10px 0;
+            word-wrap: break-word;
+            border-bottom: 1px solid #ccc;
+        }
+        .complete{
+            text-decoration: line-through;
+            color: #888;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>My To-Do List</h1>
+        <input type="text" id="taskInput" placeholder="Add a new task">
+        <button id="addTaskButton">Add Task</button>
+        <ul id="taskList"></ul>
+    </div>
+    <script>
+        loadcontent()
+        document.getElementById('addTaskButton').addEventListener('click', function () {
+            let inputElement = document.getElementById('taskInput')
+            if(inputElement.value===''){
+                alert('Enter a Valid Task')
+                return
+            }
+            createlistelement(inputElement.value)
+        })
+        function createlistelement(text){
+            let listItem=document.createElement('li')
+            let completebutton=document.createElement('button')
+            completebutton.textContent="Complete"
+            completebutton.classList.add('c-btn')
+            completebutton.onclick=function(){listItem.classList.toggle('complete')}
+            let deletebutton=document.createElement('button')
+            deletebutton.textContent="Delete"
+            deletebutton.classList.add('d-btn')
+            deletebutton.onclick=function(){listItem.remove();deletecontent(text)}
+            listItem.innerHTML=`<p>${text}</p>`
+            let unorderlist=document.getElementById('taskList')
+            unorderlist.appendChild(listItem)
+            listItem.appendChild(completebutton)
+            listItem.appendChild(deletebutton)
+            savecontent(text)
+        }
+        function loadcontent(){
+            let raw_arr=localStorage.getItem('tasks')
+            let arr=raw_arr?JSON.parse(raw_arr):[]
+            arr.forEach(element => {
+                createlistelement(element)
+            });
+        }
+        function savecontent(text){
+            let raw_arr=localStorage.getItem('tasks')
+            let arr=raw_arr?JSON.parse(raw_arr):[]
+            arr.push(text)
+            localStorage.setItem('tasks',JSON.stringify(arr))
+        }
+        function deletecontent(text){
+            let raw_arr=localStorage.getItem('tasks')
+            let arr=JSON.parse(raw_arr)
+            arr=arr.filter(ele=>{
+                return ele!==text
+            })
+            localStorage.setItem('tasks',JSON.stringify(arr))
+        }
+    </script>
+</body>
+
+</html>

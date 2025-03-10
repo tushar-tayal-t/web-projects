@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f4f4f4;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+    .container {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        width: 300px;
+        text-align: center;
+    }
+    .summary {
+        display: flex;
+        justify-content: space-between;
+        margin: 20px 0;
+    }
+    .transactions {
+        list-style: none;
+        padding: 0;
+    }
+    .transactions li {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+        background: #fff;
+        margin: 5px 0;
+        border-radius: 5px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+    .income-item {
+        border-left: 5px solid green;
+    }
+    .expense-item {
+        border-left: 5px solid red;
+    }
+    button {
+        background: red;
+        color: white;
+        border: none;
+        padding: 5px;
+        cursor: pointer;
+    }
+</style>
+<body>
+    <div class="container">
+        <h2>Expense Tracker</h2>
+        <div class="balance">
+            <h3>Your Balance</h3>
+            <h1 id="balance">$0.00</h1>
+        </div>
+        <div class="summary">
+            <div class="income">
+                <h4>Income</h4>
+                <p id="income">$0.00</p>
+            </div>
+            <div class="expense">
+                <h4>Expenses</h4>
+                <p id="expense">$0.00</p>
+            </div>
+        </div>
+        <h3>Transactions</h3>
+        <ul id="transaction-list" class="transactions"></ul>
+        <h3>Add Transaction</h3>
+        <form id="transaction-form">
+            <input type="text" id="description" placeholder="Description" required>
+            <input type="number" id="amount" placeholder="Amount" required>
+            <button type="submit">Add Transaction</button>
+        </form>
+    </div>
+    <script>
+document.addEventListener("DOMContentLoaded", () => {
+    const balanceEl = document.getElementById("balance");
+    const incomeEl = document.getElementById("income");
+    const expenseEl = document.getElementById("expense");
+    const transactionList = document.getElementById("transaction-list");
+    const transactionForm = document.getElementById("transaction-form");
+    const descriptionInput = document.getElementById("description");
+    const amountInput = document.getElementById("amount");
+    
+    let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
+    
+    function updateUI() {
+        const income = transactions.filter(t => t.amount > 0).reduce((sum, t) => sum + t.amount, 0);
+        const expenses = transactions.filter(t => t.amount < 0).reduce((sum, t) => sum + Math.abs(t.amount), 0);
+        const balance = income - expenses;
+        
+        balanceEl.textContent = `$${balance.toFixed(2)}`;
+        incomeEl.textContent = `$${income.toFixed(2)}`;
+        expenseEl.textContent = `$${expenses.toFixed(2)}`;
+        
+        transactionList.innerHTML = transactions.map((t, index) => `
+            <li class="${t.amount > 0 ? 'income-item' : 'expense-item'}">
+                ${t.description} <span>$${t.amount.toFixed(2)}</span>
+                <button onclick="removeTransaction(${index})">X</button>
+            </li>
+        `).join("");
+        
+        localStorage.setItem("transactions", JSON.stringify(transactions));
+    }
+    
+    transactionForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const description = descriptionInput.value.trim();
+        const amount = parseFloat(amountInput.value);
+        if (!description || isNaN(amount)) return;
+        transactions.push({ description, amount });
+        updateUI();
+        descriptionInput.value = "";
+        amountInput.value = "";
+    });
+    
+    window.removeTransaction = (index) => {
+        transactions.splice(index, 1);
+        updateUI();
+    };
+    
+            updateUI();
+        });
+    </script>
+    
+</body>
+</html>

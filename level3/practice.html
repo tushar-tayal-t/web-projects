@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f8f9fa;
+            height: 100vh;
+            font-family: Arial, Helvetica, sans-serif;
+            text-align: center;
+        }
+        .container{
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin: 3px;
+        }
+        input{
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: 200px;
+        }
+        button{
+            background-color: #28a745;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            margin-left: 4px;
+            cursor: pointer;
+        }
+        button:hover{
+            background-color: #218838;
+        }
+        ul{
+            list-style: none;
+            padding: 0;
+        }
+        li{
+            background-color: #ddd;
+            margin-top: 10px;
+            /* padding: 10px; */
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        li:hover{
+            background: #bbb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>To-Do List</h1>
+        <input type="text" placeholder="Enter a task..." id="input-text">
+        <button class="btn">Add Task</button>
+        <ul id="list"></ul>
+    </div>
+    <script>
+        let fun=function(){
+            let ele1=document.getElementsByTagName('input')[0];
+            let text=ele1.value.trim()
+            if(text===""){
+                alert("Enter valid task please")
+                return
+            }
+            let ele2=document.createElement('li')
+            ele2.textContent=text
+            ele2.addEventListener('click',function(){
+                ele2.remove()
+                console.log(this)
+            })
+            document.getElementById('list').append(ele2)
+            ele1.value=""
+            ele1.focus()
+        }
+        document.getElementsByClassName('btn')[0].addEventListener('click',fun)
+        document.getElementsByTagName('input')[0].addEventListener('keydown',function(e){
+            if(e.key==="Enter"){
+                fun()
+            }
+        })
+    </script>
+</body>
+</html>
